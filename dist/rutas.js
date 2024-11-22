@@ -4,6 +4,7 @@ const express_1 = require("express");
 const controlador_1 = require("./controlador/controlador");
 const router = express_1.Router();
 // Rutas para gestionar pedidos de venta
+router.get("/buscarPedido", controlador_1.buscarPedidoVenta);
 router.get("/buscarPedido/:id", controlador_1.buscarPedidoVenta);
 router.post("/crearPedido", controlador_1.crearPedidoVenta);
 router.put("/modificarPedido", controlador_1.modificarPedidoVenta);

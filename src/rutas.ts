@@ -4,6 +4,7 @@ import { buscarPedidoVenta, crearPedidoVenta, modificarPedidoVenta, eliminarPedi
 const router = Router();
 
 // Rutas para gestionar pedidos de venta
+router.get("/buscarPedido", buscarPedidoVenta);
 router.get("/buscarPedido/:id", buscarPedidoVenta);
 router.post("/crearPedido", crearPedidoVenta);
 router.put("/modificarPedido", modificarPedidoVenta);

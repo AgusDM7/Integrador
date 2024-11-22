@@ -21,19 +21,19 @@ const buscarPedidoVenta = (req, res) => {
     }
     if (fechaPedido) {
         query += " AND fechaPedido = ?";
-        values.push(id);
+        values.push(fechaPedido);
     }
     if (formaPago) {
         query += " AND formaPago = ?";
-        values.push(id);
+        values.push(formaPago);
     }
     if (observaciones) {
         query += " AND observaciones = ?";
-        values.push(id);
+        values.push(observaciones);
     }
     if (totalPedido) {
         query += " AND totalPedido = ?";
-        values.push(id);
+        values.push(totalPedido);
     }
     mysqldb_1.cxMysql.getConnection((err, connection) => {
         if (err) {

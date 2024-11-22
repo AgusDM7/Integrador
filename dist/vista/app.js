@@ -14,25 +14,39 @@ const cors = require('cors');
 const app = express();
 const API_URL = 'http://localhost:3000'; // Asegúrate de que esta URL coincida con la del backend
 // Función para cargar los pedidos en la tabla
-const cargarPedidos = () => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield fetch(`${API_URL}/buscarPedido`);
-    const pedidos = yield response.json();
-    const tablaBody = document.getElementById('tablaBody');
-    tablaBody.innerHTML = '';
-    pedidos.forEach((pedido) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-      <td>${pedido.nroComprobante}</td>
-      <td>${pedido.idcliente}</td>
-      <td>${pedido.fechaPedido}</td>
-      <td>
-        <button onclick="editarPedido(${pedido.id})">Editar</button>
-        <button onclick="eliminarPedido(${pedido.id})">Eliminar</button>
-      </td>
-    `;
-        tablaBody.appendChild(tr);
-    });
-});
+const cargarPedidos = async () => {
+    try {
+        const response = await fetch(`${API_URL}/buscarPedido`);
+        if (!response.ok) {
+            throw new Error('Error al cargar los pedidos');
+        }
+        const pedidos = await response.json();
+        const tablaBody = document.getElementById('tablaBody');
+        tablaBody.innerHTML = '';
+        
+        if (pedidos.length === 0) {
+            tablaBody.innerHTML = '<tr><td colspan="4">No hay pedidos disponibles</td></tr>';
+            return;
+        }
+
+        pedidos.forEach((pedido) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${pedido.nroComprobante}</td>
+                <td>${pedido.idcliente}</td>
+                <td>${pedido.fechaPedido}</td>
+                <td>
+                    <button onclick="editarPedido(${pedido.id})">Editar</button>
+                    <button onclick="eliminarPedido(${pedido.id})">Eliminar</button>
+                </td>
+            `;
+            tablaBody.appendChild(tr);
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al cargar los pedidos');
+    }
+};
 const editarPedido = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield fetch(`${API_URL}/buscarPedido/${id}`);
     const pedido = yield response.json();
