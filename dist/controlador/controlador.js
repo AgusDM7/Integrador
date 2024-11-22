@@ -4,6 +4,7 @@ exports.eliminarPedidoVenta = exports.modificarPedidoVenta = exports.crearPedido
 const mysqldb_1 = require("../mysqldb");
 // Consultar un pedido de venta por número o por rango de fechas
 const buscarPedidoVenta = (req, res) => {
+    console.log('Buscando pedidos con parámetros:', req.query);
     const { id, idcliente, fechaPedido, nroComprobante, formaPago, observaciones, totalPedido } = req.query;
     let query = "SELECT * FROM pedido_venta WHERE 1=1";
     let values = [];
@@ -42,14 +43,19 @@ const buscarPedidoVenta = (req, res) => {
             return;
         }
         connection.query(query, values, (err, results) => {
+            connection.release();
             if (err) {
-                res.send(err);
+                console.error('Error en la consulta:', err);
+                res.status(500).send(err);
             }
             else {
+                console.log('Resultados encontrados:', results.length);
                 res.json(results);
             }
         });
     });
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 };
 exports.buscarPedidoVenta = buscarPedidoVenta;
 // Crear un nuevo pedido de venta

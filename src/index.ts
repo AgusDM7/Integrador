@@ -1,19 +1,35 @@
 // src/index.ts
 import express from 'express';
+import cors from 'cors';
 import routes from './rutas';
 import path from "path";
 
 const app = express();
 
-// Configurar Express para servir archivos estáticos desde la carpeta "vista"
-app.use(express.static(path.join(__dirname, "vista")));
-//para transformar los datos a objetos json
-app.use(express.json());
-//transformar los datos de un formulario html a objetos json
-app.use(express.urlencoded({extended:false}));
+// Configuración de CORS más específica
+app.use(cors({
+    origin: '*',
+    methods: '*',
+    allowedHeaders: '*'
+}));
 
+// Resto de la configuración
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "vista")));
 app.use(routes);
 
+// Middleware de manejo de errores
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error(err.stack);
+    res.status(500).send('¡Algo salió mal!');
+});
+
+// Middleware para rutas no encontradas
+app.use((req: express.Request, res: express.Response) => {
+    res.status(404).send('Ruta no encontrada');
+});
+
 app.listen(3000, () => {
-    console.log("Servidor en puerto 3000", 3000);
-})
+    console.log("Servidor en puerto 3000");
+});

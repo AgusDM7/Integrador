@@ -8,25 +8,41 @@ const API_URL = 'http://localhost:3000';  // Asegúrate de que esta URL coincida
 
 // Función para cargar los pedidos en la tabla
 const cargarPedidos = async () => {
-    const response = await fetch(`${API_URL}/buscarPedido`);
-    const pedidos = await response.json();
-    const tablaBody = document.getElementById('tablaBody')!;
-    tablaBody.innerHTML = '';
+    try {
+        const response = await fetch(`${API_URL}/buscarPedido`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                // Agregar otros headers necesarios
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const pedidos = await response.json();
+        const tablaBody = document.getElementById('tablaBody')!;
+        tablaBody.innerHTML = '';
 
 
-    pedidos.forEach((pedido: any) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-      <td>${pedido.nroComprobante}</td>
-      <td>${pedido.idcliente}</td>
-      <td>${pedido.fechaPedido}</td>
-      <td>
-        <button onclick="editarPedido(${pedido.id})">Editar</button>
-        <button onclick="eliminarPedido(${pedido.id})">Eliminar</button>
-      </td>
-    `;
-        tablaBody.appendChild(tr);
-    });
+        pedidos.forEach((pedido: any) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+          <td>${pedido.nroComprobante}</td>
+          <td>${pedido.idcliente}</td>
+          <td>${pedido.fechaPedido}</td>
+          <td>
+            <button onclick="editarPedido(${pedido.id})">Editar</button>
+            <button onclick="eliminarPedido(${pedido.id})">Eliminar</button>
+          </td>
+        `;
+            tablaBody.appendChild(tr);
+        });
+    } catch (error) {
+        console.error('Error al cargar pedidos:', error);
+    }
 };
 
 const editarPedido = async (id: number) => {

@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 // Obtener lista de pedidos desde el backend
 function getPedidosJSON() {
     return __awaiter(this, void 0, void 0, function* () {
-        const response = yield fetch("http://localhost:3000/pedidos");
+        const response = yield fetch("http://localhost:3000/buscarPedido");
         const pedidos = yield response.json();
         mostrarPedidos(pedidos);
     });

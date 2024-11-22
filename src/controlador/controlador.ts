@@ -5,12 +5,12 @@ import { cxMysql } from "../mysqldb";
 
 // Consultar un pedido de venta por número o por rango de fechas
 export const buscarPedidoVenta = (req: Request, res: Response) => {
+    console.log('Buscando pedidos con parámetros:', req.query);
     const { id, idcliente,fechaPedido,nroComprobante,formaPago, observaciones, totalPedido} = req.query;
     let query = "SELECT * FROM pedido_venta WHERE 1=1";
     let values: Array<any> = [];
 
     if (nroComprobante) {
-
         query += " AND nroComprobante = ?";
         values.push(nroComprobante);
     }
@@ -25,19 +25,19 @@ export const buscarPedidoVenta = (req: Request, res: Response) => {
     }
     if (fechaPedido) {
         query += " AND fechaPedido = ?";
-        values.push(id);
+        values.push(fechaPedido);
     }
     if (formaPago) {
         query += " AND formaPago = ?";
-        values.push(id);
+        values.push(formaPago);
     }
     if (observaciones) {
         query += " AND observaciones = ?";
-        values.push(id);
+        values.push(observaciones);
     }
     if (totalPedido) {
         query += " AND totalPedido = ?";
-        values.push(id);
+        values.push(totalPedido);
     }
 
     cxMysql.getConnection((err, connection) => {
@@ -47,13 +47,19 @@ export const buscarPedidoVenta = (req: Request, res: Response) => {
             return;
         }
         connection.query(query, values, (err, results) => {
+            connection.release();
             if (err) {
-                res.send(err);
+                console.error('Error en la consulta:', err);
+                res.status(500).send(err);
             } else {
+                console.log('Resultados encontrados:', results.length);
                 res.json(results);
             }
         });
     });
+
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 };
 
 
